@@ -51,6 +51,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 // ── Ocelot Middleware — must be last ──
+app.MapGet("/", () => new {
+    status = "API Gateway Running",
+    services = new[] { "UserService", "ProductService", "OrderService" }
+});
 await app.UseOcelot();
 
 app.Run();

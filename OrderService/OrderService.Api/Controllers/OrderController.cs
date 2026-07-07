@@ -4,13 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 using OrderService.Application.Common;
 using OrderService.Application.Interfaces;
 using OrderService.Application.RequestResponse;
+using System.Security.Claims;
 
 namespace OrderService.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    //[Authorize]
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin")]
+    //[AllowAnonymous]
     [Produces("application/json")]
     public class OrderController : ControllerBase
     {
@@ -105,6 +106,14 @@ namespace OrderService.Api.Controllers
             _logger.LogInformation("Cancelling order: {OrderId}", id);
             await _orderService.CancelOrderAsync(id);
             return Ok(ApiResponse<object>.SuccessResponse("Order cancelled successfully"));
+        }
+        [HttpGet("test-auth")]
+        [Authorize]
+        public IActionResult TestAuth()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            return Ok(new { userId, email, message = "JWT working" });
         }
     }
 }

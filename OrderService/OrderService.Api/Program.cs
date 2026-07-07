@@ -95,11 +95,11 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderServiceImpl>();
 
 ////// ── Service Bus Publisher with Circuit Breaker ──
-builder.Services.AddSingleton<IMessagePublisher, ServiceBusPublisher>();
-//builder.Services.AddSingleton<IMessagePublisher, DummyMessagePublisher>();
+//builder.Services.AddSingleton<IMessagePublisher, ServiceBusPublisher>();
+builder.Services.AddSingleton<IMessagePublisher, DummyMessagePublisher>();
 
 ////// ── Service Bus Consumer as Background Service ──
-builder.Services.AddHostedService<ServiceBusConsumer>();
+//builder.Services.AddHostedService<ServiceBusConsumer>();
 
 // ── ProductService HTTP Client with Polly ──
 builder.Services.AddHttpClient<IProductServiceClient, ProductServiceClient>();
