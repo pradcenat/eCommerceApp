@@ -64,7 +64,7 @@ builder.Services.AddDbContext<ProductDbContext>(options =>
 // ── Redis Cache ──
 var redisConnection = builder.Configuration.GetConnectionString("Redis")!;
 builder.Services.AddSingleton<IConnectionMultiplexer>(
-    ConnectionMultiplexer.Connect(redisConnection));
+    ConnectionMultiplexer.Connect(redisConnection + ",abortConnect=false"));
 builder.Services.AddScoped<ICacheService, RedisCacheService>();
 
 // ── JWT Authentication ──
@@ -114,15 +114,15 @@ var app = builder.Build();
 // ── Global Exception Middleware — first ──
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProductService API v1");
         c.RoutePrefix = string.Empty;
     });
-}
+//}
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
@@ -131,11 +131,11 @@ app.UseAuthorization();
 app.MapControllers();
 
 // ── Auto migrate ──
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
     db.Database.Migrate();
-}
+//}
 
 app.Run();
